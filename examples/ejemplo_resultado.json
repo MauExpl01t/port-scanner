@@ -1,0 +1,302 @@
+{
+  "tool": "portscanner",
+  "version": "1.0.0",
+  "command": "portscanner scan 127.0.0.1 -p 2121,2222,5900,6379,8080,11211 -sV --script default,vuln -n -T4 --i-have-authorization --no-progress --format json",
+  "target": "127.0.0.1",
+  "started_at": "2026-11-10T03:20:31+00:00",
+  "finished_at": "2026-11-10T03:20:32+00:00",
+  "interrupted": false,
+  "score": 0,
+  "checks_run": [
+    "host-discovery",
+    "tcp-connect",
+    "service-detection",
+    "script:banner",
+    "script:dns-recursion",
+    "script:docker-api-exposed",
+    "script:elasticsearch-open",
+    "script:ftp-anon",
+    "script:http-headers",
+    "script:http-methods",
+    "script:http-title",
+    "script:memcached-open",
+    "script:mongodb-noauth",
+    "script:redis-noauth",
+    "script:smb-v1",
+    "script:smtp-commands",
+    "script:snmp-public",
+    "script:ssh-protocol",
+    "script:ssl-cert",
+    "script:ssl-weak-protocols",
+    "script:vnc-noauth"
+  ],
+  "errors": [],
+  "findings": [
+    {
+      "check": "ports.script.vnc-noauth",
+      "title": "VNC permite conectarse sin contraseña (127.0.0.1:5900/tcp)",
+      "severity": "CRITICAL",
+      "description": "Cualquiera que llegue a este puerto puede ver y controlar el escritorio del equipo.",
+      "recommendation": "Configura una contraseña (o mejor, usa un túnel SSH/VPN) y bloquea el puerto 5900 en el firewall.",
+      "evidence": "tipo de seguridad 1 (None) ofrecido",
+      "reference": "",
+      "host": "127.0.0.1",
+      "port": 5900,
+      "protocol": "tcp"
+    },
+    {
+      "check": "ports.script.redis-noauth",
+      "title": "Redis abierto sin contraseña (127.0.0.1:6379/tcp)",
+      "severity": "CRITICAL",
+      "description": "Cualquiera que llegue a este puerto puede leer, borrar o modificar todos los datos de Redis, y en muchos casos conseguir control del servidor.",
+      "recommendation": "Activa 'requirepass' (o ACLs), limita 'bind' a 127.0.0.1 o a la red interna y bloquea el puerto 6379 en el firewall.",
+      "evidence": "PING → +PONG sin autenticación",
+      "reference": "https://redis.io/docs/latest/operate/oss_and_stack/management/security/",
+      "host": "127.0.0.1",
+      "port": 6379,
+      "protocol": "tcp"
+    },
+    {
+      "check": "ports.script.ftp-anonymous",
+      "title": "El servidor FTP permite entrar sin usuario ni contraseña (127.0.0.1:2121/tcp)",
+      "severity": "HIGH",
+      "description": "Cualquier persona puede conectarse como 'anonymous' y ver (y a veces subir) archivos sin tener una cuenta.",
+      "recommendation": "Desactiva el acceso anónimo en la configuración del FTP o, mejor, reemplaza FTP por SFTP.",
+      "evidence": "USER anonymous → 230 Login successful",
+      "reference": "",
+      "host": "127.0.0.1",
+      "port": 2121,
+      "protocol": "tcp"
+    },
+    {
+      "check": "ports.script.memcached-open",
+      "title": "Memcached accesible sin autenticación (127.0.0.1:11211/tcp)",
+      "severity": "HIGH",
+      "description": "Cualquiera puede leer o borrar la caché y, si también responde por UDP, el servidor puede ser usado para ataques de amplificación contra terceros.",
+      "recommendation": "Haz que escuche solo en 127.0.0.1 o en la red interna, desactiva UDP (-U 0) y bloquea el puerto 11211.",
+      "evidence": "stats → STAT ...",
+      "reference": "",
+      "host": "127.0.0.1",
+      "port": 11211,
+      "protocol": "tcp"
+    },
+    {
+      "check": "ports.script.http-risky-methods",
+      "title": "El servidor permite métodos HTTP poco comunes (127.0.0.1:8080/tcp)",
+      "severity": "MEDIUM",
+      "description": "Métodos como PUT o DELETE pueden permitir subir o borrar archivos y TRACE ayuda a robar datos en ciertos ataques.",
+      "recommendation": "Desactiva los métodos que la aplicación no necesita y deja solo GET, HEAD y POST.",
+      "evidence": "Allow: GET, POST, PUT, DELETE, TRACE",
+      "reference": "",
+      "host": "127.0.0.1",
+      "port": 8080,
+      "protocol": "tcp"
+    },
+    {
+      "check": "ports.script.ssh-old-version",
+      "title": "Versión de OpenSSH muy antigua (127.0.0.1:2222/tcp)",
+      "severity": "LOW",
+      "description": "Las versiones anteriores a la 7.4 tienen vulnerabilidades públicas y usan algoritmos débiles.",
+      "recommendation": "Actualiza OpenSSH a una versión soportada por tu sistema operativo.",
+      "evidence": "OpenSSH_7.2p2",
+      "reference": "",
+      "host": "127.0.0.1",
+      "port": 2222,
+      "protocol": "tcp"
+    },
+    {
+      "check": "ports.script.http-version-disclosure",
+      "title": "El servidor web revela su versión (127.0.0.1:8080/tcp)",
+      "severity": "LOW",
+      "description": "El servidor muestra qué programa y qué versión usa. Un atacante puede buscar fallos conocidos de esa versión.",
+      "recommendation": "Oculta la versión en la configuración (por ejemplo 'server_tokens off' en nginx o 'ServerTokens Prod' en Apache).",
+      "evidence": "server: Apache/2.2.15 (CentOS); x-powered-by: PHP/5.3.3",
+      "reference": "",
+      "host": "127.0.0.1",
+      "port": 8080,
+      "protocol": "tcp"
+    },
+    {
+      "check": "ports.inventory",
+      "title": "Puertos abiertos en 127.0.0.1",
+      "severity": "INFO",
+      "description": "Puertos abiertos encontrados: 2121/tcp ftp, 2222/tcp ssh, 5900/tcp vnc, 6379/tcp redis, 8080/tcp http, 11211/tcp memcached.",
+      "recommendation": "Revisa que cada servicio abierto sea necesario y esté actualizado.",
+      "evidence": "2121/tcp ftp, 2222/tcp ssh, 5900/tcp vnc, 6379/tcp redis, 8080/tcp http, 11211/tcp memcached",
+      "reference": "",
+      "host": "127.0.0.1"
+    }
+  ],
+  "summary": {
+    "hosts_total": 1,
+    "hosts_up": 1,
+    "open_ports": 6
+  },
+  "hosts": [
+    {
+      "address": "127.0.0.1",
+      "hostname": "",
+      "up": true,
+      "reason": "echo-reply",
+      "latency_ms": 0.5,
+      "ttl": 128,
+      "mac": "",
+      "os": null,
+      "ports": [
+        {
+          "port": 2121,
+          "protocol": "tcp",
+          "state": "open",
+          "reason": "conn-established",
+          "service": "ftp",
+          "product": "vsFTPd",
+          "version": "3.0.3",
+          "extrainfo": "",
+          "tls": false,
+          "confirmed": true,
+          "banner": "220 (vsFTPd 3.0.3)",
+          "scripts": [
+            {
+              "name": "banner",
+              "output": "220 (vsFTPd 3.0.3)"
+            },
+            {
+              "name": "ftp-anon",
+              "output": "¡Acceso anónimo PERMITIDO!"
+            }
+          ]
+        },
+        {
+          "port": 2222,
+          "protocol": "tcp",
+          "state": "open",
+          "reason": "conn-established",
+          "service": "ssh",
+          "product": "OpenSSH",
+          "version": "7.2p2",
+          "extrainfo": "Ubuntu-4ubuntu2.10; protocolo 2.0",
+          "tls": false,
+          "confirmed": true,
+          "banner": "SSH-2.0-OpenSSH_7.2p2 Ubuntu-4ubuntu2.10",
+          "scripts": [
+            {
+              "name": "banner",
+              "output": "SSH-2.0-OpenSSH_7.2p2 Ubuntu-4ubuntu2.10"
+            },
+            {
+              "name": "ssh-protocol",
+              "output": "protocolo 2.0, software OpenSSH_7.2p2"
+            }
+          ]
+        },
+        {
+          "port": 5900,
+          "protocol": "tcp",
+          "state": "open",
+          "reason": "conn-established",
+          "service": "vnc",
+          "product": "VNC",
+          "version": "",
+          "extrainfo": "protocolo 3.8",
+          "tls": false,
+          "confirmed": true,
+          "banner": "RFB 003.008",
+          "scripts": [
+            {
+              "name": "banner",
+              "output": "RFB 003.008"
+            },
+            {
+              "name": "vnc-noauth",
+              "output": "RFB 3.8; autenticación: Ninguna, Contraseña VNC"
+            }
+          ]
+        },
+        {
+          "port": 6379,
+          "protocol": "tcp",
+          "state": "open",
+          "reason": "conn-established",
+          "service": "redis",
+          "product": "Redis key-value store",
+          "version": "",
+          "extrainfo": "responde sin pedir contraseña",
+          "tls": false,
+          "confirmed": true,
+          "banner": "+PONG",
+          "scripts": [
+            {
+              "name": "banner",
+              "output": "+PONG"
+            },
+            {
+              "name": "redis-noauth",
+              "output": "SIN CONTRASEÑA (versión 4.0.9, Linux 4.4.0)"
+            }
+          ]
+        },
+        {
+          "port": 8080,
+          "protocol": "tcp",
+          "state": "open",
+          "reason": "conn-established",
+          "service": "http",
+          "product": "Apache",
+          "version": "2.2.15",
+          "extrainfo": "CentOS; X-Powered-By: PHP/5.3.3",
+          "tls": false,
+          "confirmed": true,
+          "banner": "HTTP/1.0 200 OK Server: Apache/2.2.15 (CentOS)",
+          "scripts": [
+            {
+              "name": "banner",
+              "output": "HTTP/1.0 200 OK Server: Apache/2.2.15 (CentOS)"
+            },
+            {
+              "name": "http-headers",
+              "output": "server: Apache/2.2.15 (CentOS)\nx-powered-by: PHP/5.3.3"
+            },
+            {
+              "name": "http-methods",
+              "output": "Allow: GET, POST, PUT, DELETE, TRACE"
+            },
+            {
+              "name": "http-title",
+              "output": "Panel de administracion (demo) [HTTP 200]"
+            }
+          ]
+        },
+        {
+          "port": 11211,
+          "protocol": "tcp",
+          "state": "open",
+          "reason": "conn-established",
+          "service": "memcached",
+          "product": "Memcached",
+          "version": "1.4.15",
+          "extrainfo": "",
+          "tls": false,
+          "confirmed": true,
+          "banner": "VERSION 1.4.15",
+          "scripts": [
+            {
+              "name": "banner",
+              "output": "VERSION 1.4.15"
+            },
+            {
+              "name": "memcached-open",
+              "output": "Responde a 'stats' sin autenticación (versión 1.4.15)"
+            }
+          ]
+        }
+      ],
+      "traceroute": [],
+      "notes": [
+        "Escaneaste localhost: los servicios abiertos pueden estar limitados a este equipo. Para ver lo que ven los demás, escanea la IP de tu red (por ejemplo 192.168.x.x)."
+      ],
+      "port_summary": {
+        "open": 6
+      }
+    }
+  ]
+}

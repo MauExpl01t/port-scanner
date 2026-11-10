@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+*.egg-info/
+
+# Resultados de escaneos reales: nunca subir a GitHub (revelan los servicios de un equipo o cliente)
+escaneo*
+resultado*
+reporte*
+informe*
+*.gnmap
