@@ -1,6 +1,6 @@
 # PortScanner
 
-![Python](https://img.shields.io/badge/python-3.10%2B-blue) ![Licencia](https://img.shields.io/badge/licencia-MIT-green) ![Dependencias](https://img.shields.io/badge/dependencias-0-brightgreen)
+![Tests](https://github.com/MauExpl01t/port-scanner/actions/workflows/tests.yml/badge.svg) ![Python](https://img.shields.io/badge/python-3.10%2B-blue) ![Licencia](https://img.shields.io/badge/licencia-MIT-green) ![Dependencias](https://img.shields.io/badge/dependencias-0-brightgreen)
 
 Escáner de puertos **TCP/UDP** en Python puro (sin instalar nada), inspirado en Nmap. Revisa qué "puertas" (puertos) tiene
 abiertas un equipo, qué programa atiende cada una y si alguna es un riesgo, y entrega el resultado en texto, JSON, XML,
